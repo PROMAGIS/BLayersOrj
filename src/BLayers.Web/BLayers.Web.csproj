@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="libman.json" />
     <Content Remove="wwwroot\js\map.js" />
     <Content Remove="wwwroot\lib\openlayers\ol-layerswitcher.css" />
     <Content Remove="wwwroot\lib\openlayers\ol-layerswitcher.js" />
