@@ -2,6 +2,8 @@
 var appId = 'p6GqkdoqlSjfnyVvdIUL';
 var appCode = '00CJe6ilEo6UAyApIR0JNA';
 
+
+
 window.olMap = {
     showMap: function () {
         const raster = new ol.layer.Tile({
@@ -53,8 +55,9 @@ window.olMap = {
         //        console.log(data);
         //    });
         addInteraction();
-       // return vector;
+        // return vector;
     }
+  
 };
 
 

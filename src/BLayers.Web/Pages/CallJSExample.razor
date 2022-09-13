@@ -1,0 +1,86 @@
+﻿@page "/call-js-example-6"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<h1>Call JS Example 6</h1>
+
+<p>
+    <button @onclick="TriggerPrompt">Trigger browser window prompt</button>
+    <button @onclick="TriggerShowMap">Trigger browser window prompt</button>
+</p>
+
+<p>
+    @result
+</p>
+
+
+<div id="map" class="map"></div>
+<div class="row">
+    <div class="col-auto">
+        <span class="input-group">
+            <label class="input-group-text" for="type">Geometry type:</label>
+            <select class="form-select" id="type">
+                <option value="Point">Point</option>
+                <option value="LineString">LineString</option>
+                <option value="Polygon">Polygon</option>
+                <option value="Circle">Circle</option>
+                <option value="None">None</option>
+            </select>
+            <input class="form-control" type="button" value="Undo" id="undo">
+        </span>
+    </div>
+</div>
+<button @ref="exampleButton">Example Button</button>
+<button @onclick="TriggerClick">
+    Trigger click event on <code>Example Button</code>
+</button>
+@code {
+    private IJSObjectReference? module;
+    private string? result;
+    private ElementReference exampleButton;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/Sample.js");
+        }
+    }
+    public async Task TriggerClick()
+    {
+        await exampleButton.TriggerClickEvent(JS);
+        //await JS.InvokeVoidAsync("mapUndo.clickElement", exampleButton);
+    }
+
+
+    private async Task TriggerPrompt()
+    {
+        result = await Prompt("Provide some text");
+    }
+
+    private async Task TriggerShowMap()
+    {
+        result = await ShowMap("deneme");
+    }
+
+    public async ValueTask<string?> Prompt(string message) =>
+        module is not null ?
+            await module.InvokeAsync<string>("showPrompt", message) : null;
+
+    public async ValueTask<string?> ShowMap(string message)
+    {
+
+        return module is not null ?
+               await module.InvokeAsync<string>("showMap", message) : null;
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+
+
+}
